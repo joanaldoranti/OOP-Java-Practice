@@ -27,7 +27,7 @@ public class bilanganPrima {
             }
         }
 
-        // Menyesuaikan format penulisan output jika prima tidak kosong
+        // Menyesuaikan format penulisan output jika angka prima tidak kosong
         if (!prima.isEmpty()) {
             for (int i = 0; i < prima.size(); i++) {
                 if (i > 0) {
