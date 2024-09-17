@@ -1,0 +1,113 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class gameSederhana {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nHaii, kamu mau main apa?");
+            System.out.println("1. Batu Gunting Kertas");
+            System.out.println("2. Tebak Angka");
+            System.out.println("3. Keluar");
+
+            try {
+                System.out.print("Masukkan pilihan kamu: ");
+                int pilihan = Integer.parseInt(scan.nextLine());
+
+                switch (pilihan) {
+                    case 1:
+                        batuGuntingKertas(scan);
+                        break;
+                    case 2:
+                        tebakAngka(scan);
+                        break;
+                    case 3:
+                        System.exit(0);
+                    default:
+                        System.out.println("Pilihan kamu invalid.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Input tidak valid. Silahkan masukkan angka.");
+            }
+        }
+    }
+
+    public static void batuGuntingKertas(Scanner scan) {
+        Random random = new Random();
+        String[] pilihan = {"Batu", "Gunting", "Kertas"};
+        do {
+            try {
+                System.out.println("\nPilihlah:");
+                System.out.println("1. Batu");
+                System.out.println("2. Gunting");
+                System.out.println("3. Kertas");
+                System.out.print("Pilihan kamu: ");
+                int pilihanUser = Integer.parseInt(scan.nextLine());
+
+                if (pilihanUser < 1 || pilihanUser > 3) {
+                    System.out.println("Pilihan kamu invalid.");
+                    break;
+                }
+
+                String pilihanKomputer = pilihan[random.nextInt(3)];
+                System.out.println("\nKamu pilih " + pilihan[pilihanUser - 1]);
+                System.out.println("Komputer memilih " + pilihanKomputer);
+
+                if (pilihan[pilihanUser - 1].equals(pilihanKomputer)) {
+                    System.out.println("Seri!");
+                } else if ((pilihanUser == 1 && pilihanKomputer.equals("Gunting")) ||
+                        (pilihanUser == 2 && pilihanKomputer.equals("Kertas")) ||
+                        (pilihanUser == 3 && pilihanKomputer.equals("Batu"))) {
+                    System.out.println("Kamu menang!");
+                } else {
+                    System.out.println("Kamu kalah!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Input tidak valid. Silahkan masukkan angka.");
+            }
+        } while (ulang(scan));
+    }
+
+    public static void tebakAngka(Scanner scan) {
+        Random random = new Random();
+        int angkaRandom = random.nextInt(100) + 1;
+        int tebakan;
+        int jumlahTebakan = 0;
+
+        do {
+            try {
+                System.out.println("\nTebak angka antara 1 sampai 100");
+                do {
+                    System.out.print("Masukkan tebakan kamu: ");
+                    tebakan = Integer.parseInt(scan.nextLine());
+                    jumlahTebakan++;
+
+                    if (tebakan < angkaRandom) {
+                        System.out.println("Terlalu rendah!");
+                    } else if (tebakan > angkaRandom) {
+                        System.out.println("Terlalu tinggi!");
+                    } else {
+                        System.out.println("Selamat, kamu berhasil menebak dalam " + jumlahTebakan + " kali!");
+                    }
+                } while (tebakan != angkaRandom);
+            } catch (NumberFormatException e) {
+                System.out.println("Input tidak valid. Silahkan masukkan angka.");
+            }
+        } while (ulang(scan));
+    }
+
+    public static boolean ulang(Scanner scan) {
+        while (true) {
+            System.out.print("Ingin bermain lagi? (y/n): ");
+            String feedback = scan.nextLine().toLowerCase();
+            if (feedback.equals("y")) {
+                return true;
+            } else if (feedback.equals("n")) {
+                return false;
+            } else {
+                System.out.println("Input tidak valid.");
+            }
+        }
+    }
+}
