@@ -1,0 +1,178 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        AkunBank akun = new AkunBank("672022", "123456", 200000);
+
+        while (true) {
+            if (!login(scan, akun)) {
+                continue;
+            }
+
+            System.out.println("\nATM BANK SENTOSA");
+            System.out.println("Menu Pilihan :");
+            System.out.println("1. Tarik Tunai");
+            System.out.println("2. Deposit");
+            System.out.println("3. Cek Saldo");
+            System.out.println("4. Keluar");
+
+            try {
+                System.out.print("Pilihan (1-4) : ");
+                int pilihan = scan.nextInt();
+
+                switch (pilihan) {
+                    case 1:
+                        tarikTunai(scan, akun);
+                        break;
+                    case 2:
+                        deposit(scan, akun);
+                        break;
+                    case 3:
+                        cekSaldo(scan, akun);
+                        break;
+                    case 4:
+                        System.out.println("\nTerimakasih Telah Menggunakan ATM Bank Sentosa!");
+                        System.exit(0);
+                    default:
+                        System.out.println("Pilihan Anda Invalid.");
+                }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Input tidak valid. Silahkan masukkan angka.");
+                scan.next();
+            }
+        }
+
+    }
+
+    public static boolean login(Scanner scan, AkunBank akun) {
+        System.out.print("\nMasukkan Nomor Kartu ATM: ");
+        String nomorKartu = scan.next();
+        System.out.print("Masukkan Pin ATM: ");
+        String pinKartu = scan.next();
+
+        if (akun.validasiPin(pinKartu, nomorKartu)) {
+            System.out.println("\nLogin Berhasil!");
+            return true;
+        } else {
+            System.out.println("\nMaaf, Login Gagal!");
+            return false;
+        }
+    }
+
+    public static void tarikTunai(Scanner scan, AkunBank akun) {
+        do {
+            try {
+                System.out.print("\nMasukkan Jumlah yang Ingin di Tarik: ");
+                double tarik = scan.nextDouble();
+                akun.setTabungan(tarik);
+                System.out.println("Jumlah Saldo Anda Saat Ini: " + akun.getTabungan());
+            } catch (InputMismatchException e) {
+                System.out.println("\nInput tidak valid. Silahkan masukkan angka.");
+                scan.next();
+            }
+        } while (ulang(scan));
+    }
+
+    public static void deposit(Scanner scan, AkunBank akun) {
+        do {
+            try {
+                System.out.print("\nMasukkan Jumlah yang Ingin di Deposit: ");
+                double jumlah = scan.nextDouble();
+                akun.deposit(jumlah);
+                System.out.println("\nDeposit Berhasil!");
+                System.out.println("Jumlah Saldo Setelah Deposit: " + akun.getTabungan());
+                cekSaldo(scan, akun);
+            } catch (InputMismatchException e) {
+                System.out.println("\nInput tidak valid. Silahkan masukkan angka.");
+                scan.next();
+            }
+
+        } while (ulang(scan));
+    }
+
+    public static void cekSaldo(Scanner scan, AkunBank akun) {
+        do {
+            System.out.println("\nPilihan Menu Cek Saldo:");
+            System.out.println("1. Check Saldo Sekarang");
+            System.out.println("2. Check Saldo Masa Depan");
+
+            try {
+                System.out.print("Pilihan (1-2): ");
+                int pilihan = scan.nextInt();
+
+                if (pilihan == 1) {
+                    System.out.println("\nSaldo Anda Saat Ini: " + akun.getTabungan());
+                } else if (pilihan == 2) {
+                    System.out.print("\nMasukkan Jumlah Bulan: ");
+                    int bulan = scan.nextInt();
+                    double saldoMasaDepan = akun.getBunga(bulan);
+                    System.out.println("\nSaldo Anda Dalam " + bulan + " Bulan Menjadi: " + saldoMasaDepan);
+                } else {
+                    System.out.println("\nPilihan Anda Invalid.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("\nInput tidak valid. Silahkan masukkan angka.");
+                scan.next();
+            }
+        } while (ulang(scan));
+    }
+
+    public static boolean ulang(Scanner scan) {
+        while (true) {
+            System.out.print("Ingin Mengulang? (y/n): ");
+            String feedback = scan.next().toLowerCase();
+            if (feedback.equals("y")) {
+                return true;
+            } else if (feedback.equals("n")) {
+                return false;
+            } else {
+                System.out.println("\nInput Tidak Valid.");
+            }
+        }
+    }
+
+    //----------Class Constructor----------//
+    public static class AkunBank {
+        String nomorKartu;
+        String pinKartu;
+        double tabungan;
+        double bunga = 0.05;
+
+        public AkunBank(String nomorKartu, String pinKartu, double tabungan) {
+            this.nomorKartu = nomorKartu;
+            this.pinKartu = pinKartu;
+            this.tabungan = tabungan;
+        }
+
+        public boolean validasiPin(String pin, String nomor) {
+            return this.pinKartu.equals(pin) && this.nomorKartu.equals(nomor);
+        }
+
+        public double getTabungan() {
+            return tabungan;
+        }
+
+        public void setTabungan(double jumlah) {
+            if (jumlah > tabungan) {
+                System.out.println("\nMaaf, Saldo Anda Kurang!");
+            } else {
+                tabungan -= jumlah;
+            }
+        }
+
+        public void deposit(double jumlah) {
+            if (jumlah < 0) {
+                System.out.println("\nMaaf, Deposit Tidak Valid!");
+            } else {
+                tabungan += jumlah;
+            }
+        }
+
+        public double getBunga(int bulan) {
+            return tabungan * Math.pow(1 + bunga, bulan);
+        }
+    }
+}
