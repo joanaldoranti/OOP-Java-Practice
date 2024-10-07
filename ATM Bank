@@ -81,15 +81,16 @@ public class Main {
             try {
                 System.out.print("\nMasukkan Jumlah yang Ingin di Deposit: ");
                 double jumlah = scan.nextDouble();
-                akun.deposit(jumlah);
-                System.out.println("\nDeposit Berhasil!");
-                System.out.println("Jumlah Saldo Setelah Deposit: " + akun.getTabungan());
-                cekSaldo(scan, akun);
+
+                if (akun.deposit(jumlah)) {
+                    System.out.println("\nDeposit Berhasil!");
+                    System.out.println("Jumlah Saldo Setelah Deposit: " + akun.getTabungan());
+                    cekSaldo(scan, akun);
+                }
             } catch (InputMismatchException e) {
                 System.out.println("\nInput tidak valid. Silahkan masukkan angka.");
                 scan.next();
             }
-
         } while (ulang(scan));
     }
 
@@ -163,12 +164,14 @@ public class Main {
             }
         }
 
-        public void deposit(double jumlah) {
+        public boolean deposit(double jumlah) {
             if (jumlah < 0) {
                 System.out.println("\nMaaf, Deposit Tidak Valid!");
             } else {
                 tabungan += jumlah;
+                return true;
             }
+            return false;
         }
 
         public double getBunga(int bulan) {
